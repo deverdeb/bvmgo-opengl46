@@ -1,4 +1,4 @@
-package assets
+package ogl
 
 import (
 	"github.com/go-gl/gl/v4.6-core/gl"
@@ -63,12 +63,28 @@ func (shaderProgram *ShaderProgram) Uniform1f(name string, value float32) {
 	gl.Uniform1f(shaderProgram.GetUniformLocation(name), value)
 }
 
+func (shaderProgram *ShaderProgram) Uniform2f(name string, x, y float32) {
+	gl.Uniform2f(shaderProgram.GetUniformLocation(name), x, y)
+}
+
+func (shaderProgram *ShaderProgram) UniformVector2f(name string, vec2 mgl32.Vec2) {
+	gl.Uniform2f(shaderProgram.GetUniformLocation(name), vec2.X(), vec2.Y())
+}
+
 func (shaderProgram *ShaderProgram) Uniform3f(name string, x, y, z float32) {
 	gl.Uniform3f(shaderProgram.GetUniformLocation(name), x, y, z)
 }
 
 func (shaderProgram *ShaderProgram) UniformVector3f(name string, vec3 mgl32.Vec3) {
 	gl.Uniform3f(shaderProgram.GetUniformLocation(name), vec3.X(), vec3.Y(), vec3.Z())
+}
+
+func (shaderProgram *ShaderProgram) Uniform4f(name string, x, y, z, w float32) {
+	gl.Uniform4f(shaderProgram.GetUniformLocation(name), x, y, z, w)
+}
+
+func (shaderProgram *ShaderProgram) UniformVector4f(name string, vec4 mgl32.Vec4) {
+	gl.Uniform4f(shaderProgram.GetUniformLocation(name), vec4.X(), vec4.Y(), vec4.Z(), vec4.W())
 }
 
 func (shaderProgram *ShaderProgram) UniformMatrix4fv(name string, mat4 *mgl32.Mat4) {
