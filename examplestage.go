@@ -22,53 +22,54 @@ var briqueTextureData []byte
 // vertices to draw 6 faces of a cube
 var cubeVertices = []float32{
 	// position        // texture position
-	-0.5, -0.5, -0.5, 0.0, 0.0,
-	0.5, -0.5, -0.5, 1.0, 0.0,
-	0.5, 0.5, -0.5, 1.0, 1.0,
-	0.5, 0.5, -0.5, 1.0, 1.0,
-	-0.5, 0.5, -0.5, 0.0, 1.0,
-	-0.5, -0.5, -0.5, 0.0, 0.0,
-
-	-0.5, -0.5, 0.5, 0.0, 0.0,
-	0.5, -0.5, 0.5, 1.0, 0.0,
-	0.5, 0.5, 0.5, 1.0, 1.0,
-	0.5, 0.5, 0.5, 1.0, 1.0,
-	-0.5, 0.5, 0.5, 0.0, 1.0,
-	-0.5, -0.5, 0.5, 0.0, 0.0,
-
-	-0.5, 0.5, 0.5, 1.0, 0.0,
-	-0.5, 0.5, -0.5, 1.0, 1.0,
+	// Front
+	+0.5, +0.5, -0.5, 0.0, 0.0,
+	-0.5, +0.5, -0.5, 1.0, 0.0,
+	-0.5, -0.5, -0.5, 1.0, 1.0,
+	-0.5, -0.5, -0.5, 1.0, 1.0,
+	+0.5, -0.5, -0.5, 0.0, 1.0,
+	+0.5, +0.5, -0.5, 0.0, 0.0,
+	// Back
+	-0.5, -0.5, +0.5, 0.0, 1.0,
+	-0.5, +0.5, +0.5, 0.0, 0.0,
+	+0.5, +0.5, +0.5, 1.0, 0.0,
+	+0.5, +0.5, +0.5, 1.0, 0.0,
+	+0.5, -0.5, +0.5, 1.0, 1.0,
+	-0.5, -0.5, +0.5, 0.0, 1.0,
+	// Right
 	-0.5, -0.5, -0.5, 0.0, 1.0,
+	-0.5, +0.5, -0.5, 0.0, 0.0,
+	-0.5, +0.5, +0.5, 1.0, 0.0,
+	-0.5, +0.5, +0.5, 1.0, 0.0,
+	-0.5, -0.5, +0.5, 1.0, 1.0,
 	-0.5, -0.5, -0.5, 0.0, 1.0,
-	-0.5, -0.5, 0.5, 0.0, 0.0,
-	-0.5, 0.5, 0.5, 1.0, 0.0,
-
-	0.5, 0.5, 0.5, 1.0, 0.0,
-	0.5, 0.5, -0.5, 1.0, 1.0,
-	0.5, -0.5, -0.5, 0.0, 1.0,
-	0.5, -0.5, -0.5, 0.0, 1.0,
-	0.5, -0.5, 0.5, 0.0, 0.0,
-	0.5, 0.5, 0.5, 1.0, 0.0,
-
+	// Left
+	+0.5, +0.5, +0.5, 0.0, 0.0,
+	+0.5, +0.5, -0.5, 1.0, 0.0,
+	+0.5, -0.5, -0.5, 1.0, 1.0,
+	+0.5, -0.5, -0.5, 1.0, 1.0,
+	+0.5, -0.5, +0.5, 0.0, 1.0,
+	+0.5, +0.5, +0.5, 0.0, 0.0,
+	// Top
+	-0.5, +0.5, -0.5, 1.0, 1.0,
+	+0.5, +0.5, -0.5, 0.0, 1.0,
+	+0.5, +0.5, +0.5, 0.0, 0.0,
+	+0.5, +0.5, +0.5, 0.0, 0.0,
+	-0.5, +0.5, +0.5, 1.0, 0.0,
+	-0.5, +0.5, -0.5, 1.0, 1.0,
+	// Bottom
+	+0.5, -0.5, -0.5, 1.0, 1.0,
 	-0.5, -0.5, -0.5, 0.0, 1.0,
-	0.5, -0.5, -0.5, 1.0, 1.0,
-	0.5, -0.5, 0.5, 1.0, 0.0,
-	0.5, -0.5, 0.5, 1.0, 0.0,
-	-0.5, -0.5, 0.5, 0.0, 0.0,
-	-0.5, -0.5, -0.5, 0.0, 1.0,
-
-	-0.5, 0.5, -0.5, 0.0, 1.0,
-	0.5, 0.5, -0.5, 1.0, 1.0,
-	0.5, 0.5, 0.5, 1.0, 0.0,
-	0.5, 0.5, 0.5, 1.0, 0.0,
-	-0.5, 0.5, 0.5, 0.0, 0.0,
-	-0.5, 0.5, -0.5, 0.0, 1.0,
+	-0.5, -0.5, +0.5, 0.0, 0.0,
+	-0.5, -0.5, +0.5, 0.0, 0.0,
+	+0.5, -0.5, +0.5, 1.0, 0.0,
+	+0.5, -0.5, -0.5, 1.0, 1.0,
 }
 
 var cubePositions = [][]float32{
 	{0.0, 0.0, -3.0},
 	{2.0, 5.0, -15.0},
-	{-1.5, -2.2, -2.5},
+	{-1.5, 5.0, -2.5},
 	{-3.8, -2.0, -12.3},
 	{2.4, -0.4, -3.5},
 	{-1.7, 3.0, -7.5},
@@ -95,6 +96,7 @@ type exampleStage struct {
 	fpsCounter engine.FpsCounter
 	// Caméra de la vue 3D
 	camera graphic.Camera
+	fov    graphic.Angle
 }
 
 func (stage *exampleStage) Initialize(app *engine.Application) error {
@@ -146,6 +148,7 @@ func (stage *exampleStage) Initialize(app *engine.Application) error {
 	stage.camera = graphic.CreateCamera()
 	stage.camera.Position = mgl32.Vec3{0., 3.5, -5.}
 	stage.camera.Yaw = graphic.AngleInDegree(180.)
+	stage.fov = graphic.AngleInDegree(60.0)
 
 	return nil
 }
@@ -159,13 +162,12 @@ func (stage *exampleStage) Release(app *engine.Application) {
 
 func (stage *exampleStage) Display(app *engine.Application, _ *engine.Timer) {
 	dimx, dimy := app.Size()
-	fov := float32(60.0)
 
 	// Affichage scene 3D
 	stage.program.Use()
 
 	// Matrice de projection
-	projectTransform := mgl32.Perspective(mgl32.DegToRad(fov), float32(dimx)/float32(dimy), 0.1, 100.0)
+	projectTransform := mgl32.Perspective(mgl32.DegToRad(float32(stage.fov.Degree())), float32(dimx)/float32(dimy), 0.1, 100.0)
 	stage.program.UniformMatrix4fv("projection", &projectTransform)
 
 	// Matrice de positionnement de la caméra
@@ -190,8 +192,8 @@ func (stage *exampleStage) Display(app *engine.Application, _ *engine.Timer) {
 	for _, pos := range cubePositions {
 		// Matrice de positionnement de l'élément dans le "monde"
 		worldTranslate := mgl32.Translate3D(pos[0], pos[1], pos[2])
-		worldTransform := worldTranslate.Mul4(rotateX.Mul3(rotateY).Mul3(rotateZ).Mat4())
-		stage.program.UniformMatrix4fv("world", &worldTransform)
+		worldTranslate = worldTranslate.Mul4(rotateX.Mul3(rotateY).Mul3(rotateZ).Mat4())
+		stage.program.UniformMatrix4fv("world", &worldTranslate)
 
 		// Dessin du cube
 		gl.DrawArrays(gl.TRIANGLES, 0, 36)
@@ -203,13 +205,15 @@ func (stage *exampleStage) Display(app *engine.Application, _ *engine.Timer) {
 
 	// draw each cube after all coordinate system transforms are bound
 	for x := -10; x < 10; x++ {
-		for z := -10; z < 10; z++ {
-			// Matrice de positionnement de l'élément dans le "monde"
-			worldTransform := mgl32.Translate3D(float32(x), -5., float32(z))
-			stage.program.UniformMatrix4fv("world", &worldTransform)
+		for y := -10; y < -5; y++ {
+			for z := -10; z < 10; z++ {
+				// Matrice de positionnement de l'élément dans le "monde"
+				worldTransform := mgl32.Translate3D(float32(x), float32(y), float32(z))
+				stage.program.UniformMatrix4fv("world", &worldTransform)
 
-			// Dessin du cube
-			gl.DrawArrays(gl.TRIANGLES, 0, 36)
+				// Dessin du cube
+				gl.DrawArrays(gl.TRIANGLES, 0, 36)
+			}
 		}
 	}
 
@@ -219,15 +223,14 @@ func (stage *exampleStage) Display(app *engine.Application, _ *engine.Timer) {
 	stage.trollfaceTexture.UnBind()
 
 	// Et ensuite la 2D
-	app.Renderer2d().Begin()
+	app.Renderer2d().Begin(float32(dimx), float32(dimy))
+
 	for x := 0; x < 800; x = x + 20 {
 		source := graphic.Rectangle{0., 0., float32(stage.trollfaceTexture.Width()), float32(stage.trollfaceTexture.Height())}
 		target := graphic.Rectangle{float32(x), 0., 20., 20.}
 		app.Renderer2d().DrawSpriteFromRect(stage.trollfaceTexture, source, target)
 	}
 
-	// Et ensuite la 2D
-	app.Renderer2d().Begin()
 	totalSize := 200
 	squareSize := 20
 	ratioX := float32(stage.trollfaceTexture.Width()) / float32(totalSize)
@@ -326,15 +329,13 @@ func (stage *exampleStage) ProcessEvent(app *engine.Application, event input.Eve
 	case input.MOUSE_MOVE:
 		mme := event.(*input.MouseMoveEvent)
 		if app.Mouse().CursorLocked() {
-			log.Printf("Before - Yaw: %v / Pitch: %v", stage.camera.Yaw.Degree(), stage.camera.Pitch.Degree())
 			stage.camera.Yaw = (stage.camera.Yaw - graphic.AngleInDegree(mme.HShift()/10.)).Mod360()
 			stage.camera.Pitch = (stage.camera.Pitch + graphic.AngleInDegree(mme.VShift()/10.)).Mod360()
-			log.Printf("After - Yaw: %v / Pitch: %v", stage.camera.Yaw.Degree(), stage.camera.Pitch.Degree())
 		}
-	/*case input.MOUSE_SCROLL:
-	mse := event.(*input.MouseScrollEvent)
-	stage.camera.Fov = stage.camera.Fov + geometry.AngleInDegree(mse.VShift())
-	logs.Infof("New FOV: %0.00f", stage.camera.Fov)*/
+	case input.MOUSE_SCROLL:
+		mse := event.(*input.MouseScrollEvent)
+		stage.fov = stage.fov + graphic.AngleInDegree(mse.VShift())
+		log.Printf("New FOV: %0.00f", stage.fov.Degree())
 	case input.WINDOW:
 		if event.(*input.WindowEvent).Action() == input.WINDOW_CLOSED {
 			app.Stop()

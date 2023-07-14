@@ -51,10 +51,7 @@ void main()
 var renderer2dVertices = []float32{
 	// pos    // tex
 	0.0, 1.0, 0.0, 1.0,
-	1.0, 0.0, 1.0, 0.0,
 	0.0, 0.0, 0.0, 0.0,
-
-	0.0, 1.0, 0.0, 1.0,
 	1.0, 1.0, 1.0, 1.0,
 	1.0, 0.0, 1.0, 0.0,
 }
@@ -154,7 +151,7 @@ func (renderer *Renderer2d) releaseVao() {
 }
 
 // Begin method initializes 2D rendering (active shader and OpenGL states)
-func (renderer *Renderer2d) Begin() {
+func (renderer *Renderer2d) Begin(width, height float32) {
 	// Disable depth test
 	renderer.keepPreviousStateDepthTest = gl.IsEnabled(gl.DEPTH_TEST)
 	if renderer.keepPreviousStateDepthTest {
@@ -172,7 +169,7 @@ func (renderer *Renderer2d) Begin() {
 	renderer.shaderProgram.Use()
 
 	// Initialize orthogonal projection
-	projection2d := mgl32.Ortho2D(0., 800., 600., 0.)
+	projection2d := mgl32.Ortho2D(0., width, height, 0.)
 	renderer.shaderProgram.UniformMatrix4fv("projection", &projection2d)
 }
 
@@ -262,7 +259,7 @@ func (renderer *Renderer2d) DrawSpriteExWithRotateAndColor(texture *Texture, sou
 
 	// Faire le rendu du VAO
 	gl.BindVertexArray(renderer.vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, 6)
+	gl.DrawArrays(gl.TRIANGLE_STRIP, 0, 4)
 	gl.BindVertexArray(0)
 }
 

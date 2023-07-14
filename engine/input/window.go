@@ -87,13 +87,19 @@ func (window *Window) Close() {
 }
 
 func (window *Window) Clear() {
-	// Z-Buffer
+	// Positionner les états
+	// - Transparence
+	gl.Disable(gl.BLEND)
+	// - Culling (masquer les faces qui tournent le dos à la caméra)
+	gl.Enable(gl.CULL_FACE)
+	gl.CullFace(gl.FRONT)
+	// - Z-Buffer
 	gl.Enable(gl.DEPTH_TEST)
 	gl.ClearDepth(1)
 	gl.DepthFunc(gl.LEQUAL)
+
 	// Vider les buffer
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.Disable(gl.BLEND)
 
 }
 
