@@ -138,7 +138,10 @@ func (app *Application) SetStage(stage Stage) {
 		app.stage = &EmptyStage{}
 	}
 	if app.isLaunched {
-		app.stage.Initialize(app)
+		err := app.stage.Initialize(app)
+		if err != nil {
+			log.Fatalf("Failed to initialize stage: %v", err)
+		}
 	}
 }
 

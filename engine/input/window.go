@@ -68,8 +68,11 @@ func (window *Window) Launch() error {
 	vendor := gl.GoStr(gl.GetString(gl.VENDOR))
 	slog.Info("OpenGL", "version", version, "vendor", vendor)
 
+	// Conserver position et taille
+	window.initialX, window.initialY = window.glfwWindow.GetPos()
+	window.initialWidth, window.initialHeight = window.glfwWindow.GetSize()
 	// Positionner les propriétés VSync et Fullscreen
-	window.SetVSync(window.VSync())
+	window.applyFullScreen()
 
 	slog.Debug("window is launched")
 	return nil
@@ -120,7 +123,7 @@ func (window *Window) createGlfwWindow() error {
 	windowHeight := 600
 
 	// Configure OpengGL for GLFW
-	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.ContextVersionMajor, 4)
 	glfw.WindowHint(glfw.ContextVersionMinor, 6)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
@@ -185,7 +188,7 @@ func (window *Window) FullScreen() bool {
 }
 
 func (window *Window) SetFullScreen(fullscreen bool) {
-	if fullscreen == window.fullscreen {
+	if fullscreen != window.fullscreen {
 		window.fullscreen = fullscreen
 		if window.IsLaunched() {
 			window.applyFullScreen()

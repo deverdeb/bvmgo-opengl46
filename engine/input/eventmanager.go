@@ -1,6 +1,7 @@
 package input
 
 import (
+	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-gl/mathgl/mgl64"
 )
@@ -119,80 +120,89 @@ func (mng *EventManager) mouseScrollCallback(_ *glfw.Window, horizontalShift flo
 	mng.processor(event)
 }
 
-func (mng *EventManager) resizeCallback(_ *glfw.Window, width int, height int) {
-	//gl.Viewport(0, 0, int32(width), int32(height))
-	event := WindowEvent{
-		window: mng.window,
-		width:  width,
-		heigth: height,
-		action: WINDOW_RESIZED,
-	}
-	//gl.Viewport(0, 0, int32(width), int32(height))
-	mng.processor(&event)
-}
-
 //////////////////////////////// WINDOW
 
-func (mng *EventManager) closeCallback(glfwWindow *glfw.Window) {
-	width, height := glfwWindow.GetFramebufferSize()
-	event := WindowEvent{
-		window: mng.window,
-		width:  width,
-		heigth: height,
-		action: WINDOW_CLOSED,
+func (mng *EventManager) resizeCallback(_ *glfw.Window, width int, height int) {
+	gl.Viewport(0, 0, int32(width), int32(height))
+	if mng.processor != nil {
+		event := WindowEvent{
+			window: mng.window,
+			width:  width,
+			heigth: height,
+			action: WINDOW_RESIZED,
+		}
+		mng.processor(&event)
 	}
-	mng.processor(&event)
+}
+
+func (mng *EventManager) closeCallback(glfwWindow *glfw.Window) {
+	if mng.processor != nil {
+		width, height := glfwWindow.GetFramebufferSize()
+		event := WindowEvent{
+			window: mng.window,
+			width:  width,
+			heigth: height,
+			action: WINDOW_CLOSED,
+		}
+		mng.processor(&event)
+	}
 }
 
 func (mng *EventManager) maximizeCallback(glfwWindow *glfw.Window, maximized bool) {
 	var action WindowAction
 	width, height := glfwWindow.GetFramebufferSize()
-	if maximized {
-		action = WINDOW_MAXIMIZED
-	} else {
-		action = WINDOW_RESTORED
+	gl.Viewport(0, 0, int32(width), int32(height))
+	if mng.processor != nil {
+		if maximized {
+			action = WINDOW_MAXIMIZED
+		} else {
+			action = WINDOW_RESTORED
+		}
+		event := WindowEvent{
+			window: mng.window,
+			width:  width,
+			heigth: height,
+			action: action,
+		}
+		mng.processor(&event)
 	}
-	//gl.Viewport(0, 0, int32(width), int32(height))
-	event := WindowEvent{
-		window: mng.window,
-		width:  width,
-		heigth: height,
-		action: action,
-	}
-	mng.processor(&event)
 }
 
 func (mng *EventManager) iconifyCallback(glfwWindow *glfw.Window, iconified bool) {
-	var action WindowAction
-	width, height := glfwWindow.GetFramebufferSize()
-	if iconified {
-		action = WINDOW_ICONIFIED
-	} else {
-		action = WINDOW_RESTORED
-		//gl.Viewport(0, 0, int32(width), int32(height))
+	if mng.processor != nil {
+		var action WindowAction
+		width, height := glfwWindow.GetFramebufferSize()
+		if iconified {
+			action = WINDOW_ICONIFIED
+		} else {
+			action = WINDOW_RESTORED
+			gl.Viewport(0, 0, int32(width), int32(height))
+		}
+		event := WindowEvent{
+			window: mng.window,
+			width:  width,
+			heigth: height,
+			action: action,
+		}
+		mng.processor(&event)
 	}
-	event := WindowEvent{
-		window: mng.window,
-		width:  width,
-		heigth: height,
-		action: action,
-	}
-	mng.processor(&event)
 }
 
 func (mng *EventManager) focusCallback(glfwWindow *glfw.Window, focused bool) {
-	width, height := glfwWindow.GetFramebufferSize()
-	var action WindowAction
-	if focused {
-		action = WINDOW_FOCUS
-	} else {
-		action = WINDOW_UNFOCUS
+	if mng.processor != nil {
+		width, height := glfwWindow.GetFramebufferSize()
+		var action WindowAction
+		if focused {
+			action = WINDOW_FOCUS
+		} else {
+			action = WINDOW_UNFOCUS
+		}
+		event := WindowEvent{
+			window: mng.window,
+			width:  width,
+			heigth: height,
+			action: action,
+		}
+		mng.processor(&event)
 	}
-	event := WindowEvent{
-		window: mng.window,
-		width:  width,
-		heigth: height,
-		action: action,
-	}
-	mng.processor(&event)
 }

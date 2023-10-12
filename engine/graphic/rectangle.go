@@ -1,6 +1,8 @@
 package graphic
 
-import "github.com/go-gl/mathgl/mgl32"
+import (
+	"github.com/go-gl/mathgl/mgl32"
+)
 
 // Rectangle is a 2D rectangle.
 type Rectangle mgl32.Vec4
@@ -52,4 +54,10 @@ func (rect *Rectangle) Dim() mgl32.Vec2 {
 func (rect *Rectangle) SetDim(dim mgl32.Vec2) {
 	rect[2] = dim.X()
 	rect[3] = dim.Y()
+}
+
+// Le point est-il dans le rectangle
+func (rect *Rectangle) In(pos mgl32.Vec2) bool {
+	return pos.X() >= rect.X() && pos.X() <= rect.X()+rect.Width() &&
+		pos.Y() >= rect.Y() && pos.Y() <= rect.Y()+rect.Height()
 }

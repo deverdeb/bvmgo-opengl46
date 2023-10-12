@@ -3,6 +3,7 @@ package graphic
 import (
 	"bytes"
 	"fmt"
+	"github.com/go-gl/gl/v4.6-core/gl"
 	"image"
 	"image/draw"
 	"io"
@@ -10,8 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/go-gl/gl/v4.6-core/gl"
 )
 
 type Texture struct {
@@ -133,6 +132,10 @@ func (texture *Texture) Width() int32 {
 
 func (texture *Texture) Height() int32 {
 	return texture.height
+}
+
+func (texture *Texture) Rectangle() Rectangle {
+	return Rectangle{0, 0, float32(texture.width), float32(texture.height)}
 }
 
 func buildTexture(imageReader io.Reader, decode func(reader io.Reader) (image.Image, error)) (*Texture, error) {

@@ -6,6 +6,8 @@ import (
 	"log/slog"
 )
 
+const defaultCharactersOrder string = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ CüéâäàaçêëèïîìAAEaAôöòùÿOUo£0xfaiouñN  ?r 11!\"\""
+
 type Font struct {
 	// Texture
 	texture *Texture
@@ -17,6 +19,8 @@ type Font struct {
 	charWidth int32
 	// Dimension des caractères : hauteur
 	charHeight int32
+	// Ordre des caractères
+	charactersOrder string
 }
 
 func (font *Font) Release() {
@@ -37,9 +41,10 @@ func LoadFontFromBitmapFile(filename string, charWidth int32, charHeight int32) 
 
 	// On crée notre objet texture qui sera retournée
 	asset := &Font{
-		texture:    texture,
-		charWidth:  charWidth,
-		charHeight: charHeight,
+		texture:         texture,
+		charWidth:       charWidth,
+		charHeight:      charHeight,
+		charactersOrder: defaultCharactersOrder,
 	}
 	return asset, nil
 }
@@ -54,9 +59,10 @@ func LoadFontFromBytes(content []byte, format ImageFormat, charWidth int32, char
 
 	// On crée notre objet texture qui sera retournée
 	asset := &Font{
-		texture:    texture,
-		charWidth:  charWidth,
-		charHeight: charHeight,
+		texture:         texture,
+		charWidth:       charWidth,
+		charHeight:      charHeight,
+		charactersOrder: defaultCharactersOrder,
 	}
 	return asset, nil
 }
@@ -74,7 +80,7 @@ func (font *Font) CharacterHeight() int32 {
 }
 
 func (font *Font) CharacterPosition(character int32) mgl32.Vec2 {
-	idxChar := character - 32
+	idxChar := font.indexOfCharacter(character)
 	return mgl32.Vec2{
 		float32((idxChar % font.charWidth) * font.charWidth),
 		float32((idxChar / font.charWidth) * font.charHeight),
@@ -82,11 +88,22 @@ func (font *Font) CharacterPosition(character int32) mgl32.Vec2 {
 }
 
 func (font *Font) CharacterRectangle(character int32) Rectangle {
-	idxChar := character - 32
+	idxChar := font.indexOfCharacter(character)
 	return BuildRectangle(
 		float32((idxChar%font.charWidth)*font.charWidth),
 		float32((idxChar/font.charWidth)*font.charHeight),
 		float32(font.charWidth),
 		float32(font.charHeight),
 	)
+}
+
+func (font *Font) indexOfCharacter(searchCharacter int32) int32 {
+	index := int32(0)
+	for _, character := range font.charactersOrder {
+		if searchCharacter == character {
+			return index
+		}
+		index++
+	}
+	return 0
 }

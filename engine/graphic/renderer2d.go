@@ -1,6 +1,7 @@
 package graphic
 
 import (
+	_ "embed"
 	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"log/slog"
@@ -8,44 +9,14 @@ import (
 )
 
 // renderer2dVertexShader is the 2D vertex shader.
-var renderer2dVertexShader = `
-#version 460 core
-
-layout (location = 0) in vec2 position;     // Vertex Array - Position 
-layout (location = 1) in vec2 textPosition; // Vertex Array - Texture coordinates (in)
-
-out vec2 TexCoords;       // Texture coordinates (out)
-
-uniform mat4 projection;  // Orthogonal projection for 2d rendering
-uniform mat4 coordinates; // Image coordinate on screen
-
-void main()
-{
-    gl_Position = projection * coordinates * vec4(position.xy, 0.0, 1.0);
-    TexCoords = textPosition;
-}
-`
+//
+//go:embed shader/shader2d.vert
+var renderer2dVertexShader string
 
 // renderer2dFragmentShader is the 2D fragment shader.
-var renderer2dFragmentShader = `
-#version 460 core
-
-in vec2 TexCoords; // Texture coordinates
-out vec4 color;    // Pixel color
-
-uniform sampler2D image;      // Texture
-uniform vec4 spriteColor;     // User color
-uniform vec2 texturePosition; // Position on texture
-uniform vec2 textureRatio;    // Texture ratio (for resize)
-
-void main()
-{
-	// compute coordinates on texture
-	vec2 coordinates = (TexCoords * textureRatio) + texturePosition;
-	// mix user color and texture color
-    color = spriteColor * texture(image, coordinates);
-}
-`
+//
+//go:embed shader/shader2d.frag
+var renderer2dFragmentShader string
 
 // renderer2dVertices contains 2D square coordinates (and texture coordinates).
 var renderer2dVertices = []float32{
@@ -263,26 +234,53 @@ func (renderer *Renderer2d) DrawSpriteExWithRotateAndColor(texture *Texture, sou
 	gl.BindVertexArray(0)
 }
 
+// DrawText dessine un texte à la position indiquée
 func (renderer *Renderer2d) DrawText(font *Font, text string, position mgl32.Vec2, color Color) {
+	renderer.DrawTextEx(font, text, position, mgl32.Vec2{1., 1.}, color)
+}
+
+// DrawTextInRect dessine un texte dans le rectangle indiqué en essayant d'utiliser toute la place
+func (renderer *Renderer2d) DrawTextInRect(font *Font, text string, targetRectangle Rectangle, color Color) {
+	// Récupérer la taille du texte pour un rendu 1:1
+	textWidth, textHeight := renderer.textSize(font, text)
+	if textWidth == 0 || textHeight == 0 {
+		return
+	}
+
+	// Calculer le ratio pour faire rentrer le texte dans le rectangle de rendu
+	ratio := min(targetRectangle.Width()/float32(textWidth), targetRectangle.Height()/float32(textHeight))
+
+	// Centrer le texte
+	posX := (targetRectangle.Width()-float32(textWidth)*ratio)/2 + targetRectangle.X()
+	posY := (targetRectangle.Height()-float32(textHeight)*ratio)/2 + targetRectangle.Y()
+
+	renderer.DrawTextEx(font, text, mgl32.Vec2{posX, posY}, mgl32.Vec2{ratio, ratio}, color)
+}
+
+// DrawTextEx dessine un texte à une position en applicant un ratio sur les dimensions
+func (renderer *Renderer2d) DrawTextEx(font *Font, text string, position mgl32.Vec2, scale mgl32.Vec2, color Color) {
+	charWidth := float32(font.CharacterWidth()) * scale.X()
+	charHeight := float32(font.CharacterHeight()) * scale.Y()
+
 	// Activer la texture
 	font.Texture().Bind()
 
-	destination := BuildRectangle(position.X(), position.Y(), float32(font.CharacterWidth()), float32(font.CharacterHeight()))
+	destination := BuildRectangle(position.X(), position.Y(), charWidth, charHeight)
 	for _, character := range text {
 		switch character {
 		case '\n':
 			destination.SetX(position.X())
-			destination.SetY(destination.Y() + float32(font.CharacterHeight()))
+			destination.SetY(destination.Y() + charHeight)
 		case '\t': // Tabulation
 			for iter := 0; iter < TabulationSize; iter++ {
 				renderer.drawCharacter(font, ' ', destination, color)
-				destination.SetX(destination.X() + float32(font.CharacterWidth()))
+				destination.SetX(destination.X() + charWidth)
 			}
 		case '\r', '\b', '\a':
 			// Ignorer...
 		default:
 			renderer.drawCharacter(font, character, destination, color)
-			destination.SetX(destination.X() + float32(font.CharacterWidth()))
+			destination.SetX(destination.X() + charWidth)
 		}
 	}
 }
@@ -290,4 +288,29 @@ func (renderer *Renderer2d) DrawText(font *Font, text string, position mgl32.Vec
 func (renderer *Renderer2d) drawCharacter(font *Font, character int32, destination Rectangle, color Color) {
 	source := font.CharacterRectangle(character)
 	renderer.DrawSpriteFromRectWithColor(font.Texture(), source, destination, color)
+}
+
+func (renderer *Renderer2d) textSize(font *Font, text string) (width, height int32) {
+	if len(text) == 0 {
+		return 0, 0
+	}
+	nbCharWidth := int32(0)
+	nbCharHeight := int32(1)
+	currentWidth := int32(0)
+	for _, character := range text {
+		switch character {
+		case '\n':
+			nbCharWidth = max(nbCharWidth, currentWidth)
+			nbCharHeight++
+			currentWidth = 0
+		case '\t': // Tabulation
+			currentWidth += TabulationSize
+		case '\r', '\b', '\a':
+			// Ignorer...
+		default:
+			currentWidth += 1
+		}
+	}
+	nbCharWidth = max(nbCharWidth, currentWidth)
+	return nbCharWidth * font.charWidth, nbCharHeight * font.charHeight
 }

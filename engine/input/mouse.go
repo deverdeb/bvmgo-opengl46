@@ -64,9 +64,21 @@ func (mouse *Mouse) Pos() (x, y float64) {
 	return mouse.pos.X(), mouse.pos.Y()
 }
 
+// SetPos déplace la position de la souris
+func (mouse *Mouse) SetPos(x, y float64) {
+	mouse.pos = mgl64.Vec2{x, y}
+	mouse.glfwWindow.SetCursorPos(x, y)
+}
+
 // Pos2d retourne la position de la souris
 func (mouse *Mouse) Pos2d() mgl64.Vec2 {
 	return mouse.pos
+}
+
+// SetPos2d déplace la position de la souris
+func (mouse *Mouse) SetPos2d(pos mgl64.Vec2) {
+	mouse.pos = pos
+	mouse.glfwWindow.SetCursorPos(pos.X(), pos.Y())
 }
 
 // HScroll retourne la position de la molette horizontale de la souris

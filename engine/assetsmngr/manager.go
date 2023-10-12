@@ -54,6 +54,12 @@ func (manager *Manager[T]) RegisterAsset(name string, asset *T) {
 	}
 }
 
+// IsRegister indique si une ressource est déjà enregistrée.
+func (manager *Manager[T]) IsRegister(name string) bool {
+	resourceInformation, found := manager.assetInformations[name]
+	return found && !resourceInformation.IsObsolete
+}
+
 // Register enregistre une ressource avec une fonction de chargement et de libération (optionnelle).
 func (manager *Manager[T]) Register(name string, loadFunction AssetLoadFunction[T], releaseFunction AssetReleaseFunction[T]) error {
 	if loadFunction == nil {
